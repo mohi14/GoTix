@@ -1,23 +1,16 @@
 package main
 
 import (
-	"net/http"
-
-	"github.com/labstack/echo/v5"
-	"github.com/labstack/echo/v5/middleware"
+	"gotickets/internal/config"
+	"gotickets/internal/server"
 )
 
 func main() {
-	e := echo.New()
+	// load environment variables
+	cfg := config.LoadEnv()
 
-	e.Use(middleware.RequestLogger())
-	e.Use(middleware.Recover())
+	// connect to the database
+	db := config.ConnectDB(cfg)
 
-	e.GET("/", func(c *echo.Context) error {
-		return c.JSON(http.StatusOK, map[string]string{"message": "Hello, World!"})
-	})
-
-	if err := e.Start(":8080"); err != nil {
-		e.Logger.Error("failed to start server", "error", err)
-	}
+	server.StartServer(db, cfg)
 }
