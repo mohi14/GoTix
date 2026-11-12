@@ -12,7 +12,7 @@ type User struct {
 	Password string `json:"password" gorm:"type:varchar(100);not null"`
 }
 
-func (u *User) hasPassword(password string) error {
+func (u *User) hashPassword(password string) error {
 	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 
 	if err != nil {
