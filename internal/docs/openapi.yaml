@@ -1,0 +1,361 @@
+openapi: 3.1.0
+info:
+  title: GoTix API
+  description: API for managing events and booking tickets.
+  version: 1.0.0
+  license:
+    name: MIT
+servers:
+  - url: http://localhost:8080
+    description: Local development
+tags:
+  - name: System
+  - name: Authentication
+  - name: Events
+  - name: Bookings
+paths:
+  /healthz:
+    get:
+      tags: [System]
+      summary: Machine-readable health check
+      responses:
+        "200":
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: {type: string, example: ok}
+                  service: {type: string, example: gotix-api}
+                  timestamp: {type: string, format: date-time}
+  /api/v1/auth/register:
+    post:
+      tags: [Authentication]
+      summary: Register a user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateUserRequest"
+      responses:
+        "201":
+          description: User created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserResponse"
+        "400": {$ref: "#/components/responses/BadRequest"}
+        "409": {$ref: "#/components/responses/Conflict"}
+  /api/v1/auth/login:
+    post:
+      tags: [Authentication]
+      summary: Login with email and password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+      responses:
+        "200":
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserResponse"
+        "400": {$ref: "#/components/responses/BadRequest"}
+        "401": {$ref: "#/components/responses/Unauthorized"}
+  /api/v1/auth/google:
+    post:
+      tags: [Authentication]
+      summary: Login with a Google ID token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GoogleLoginRequest"
+      responses:
+        "200":
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserResponse"
+        "400": {$ref: "#/components/responses/BadRequest"}
+        "401": {$ref: "#/components/responses/Unauthorized"}
+  /api/v1/auth/me:
+    get:
+      tags: [Authentication]
+      summary: Get the authenticated user
+      security: [{bearerAuth: []}]
+      responses:
+        "200":
+          description: Current user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserResponse"
+        "401": {$ref: "#/components/responses/Unauthorized"}
+  /api/v1/auth/users/{id}/role:
+    patch:
+      tags: [Authentication]
+      summary: Update a user's role
+      description: Requires admin or super_admin. Admins cannot assign admin or super_admin.
+      security: [{bearerAuth: []}]
+      parameters:
+        - $ref: "#/components/parameters/UserID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateRoleRequest"
+      responses:
+        "200":
+          description: Role updated
+        "400": {$ref: "#/components/responses/BadRequest"}
+        "401": {$ref: "#/components/responses/Unauthorized"}
+        "403": {$ref: "#/components/responses/Forbidden"}
+        "404": {$ref: "#/components/responses/NotFound"}
+  /api/v1/events:
+    get:
+      tags: [Events]
+      summary: List events
+      responses:
+        "200":
+          description: Event list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Event"
+    post:
+      tags: [Events]
+      summary: Create an event
+      security: [{bearerAuth: []}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateEventRequest"
+      responses:
+        "201":
+          description: Event created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Event"
+        "400": {$ref: "#/components/responses/BadRequest"}
+        "401": {$ref: "#/components/responses/Unauthorized"}
+        "403": {$ref: "#/components/responses/Forbidden"}
+  /api/v1/events/{id}:
+    get:
+      tags: [Events]
+      summary: Get an event
+      parameters:
+        - $ref: "#/components/parameters/EventID"
+      responses:
+        "200":
+          description: Event details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Event"
+        "400": {$ref: "#/components/responses/BadRequest"}
+        "404": {$ref: "#/components/responses/NotFound"}
+    put:
+      tags: [Events]
+      summary: Update an event
+      security: [{bearerAuth: []}]
+      parameters:
+        - $ref: "#/components/parameters/EventID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateEventRequest"
+      responses:
+        "200":
+          description: Event updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Event"
+        "400": {$ref: "#/components/responses/BadRequest"}
+        "401": {$ref: "#/components/responses/Unauthorized"}
+        "403": {$ref: "#/components/responses/Forbidden"}
+        "404": {$ref: "#/components/responses/NotFound"}
+  /api/v1/bookings:
+    post:
+      tags: [Bookings]
+      summary: Book tickets
+      security: [{bearerAuth: []}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateBookingRequest"
+      responses:
+        "201":
+          description: Booking created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Booking"
+        "400": {$ref: "#/components/responses/BadRequest"}
+        "401": {$ref: "#/components/responses/Unauthorized"}
+        "404": {$ref: "#/components/responses/NotFound"}
+        "409": {$ref: "#/components/responses/Conflict"}
+  /api/v1/bookings/me:
+    get:
+      tags: [Bookings]
+      summary: List the current user's bookings
+      security: [{bearerAuth: []}]
+      responses:
+        "200":
+          description: Booking list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Booking"
+        "401": {$ref: "#/components/responses/Unauthorized"}
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    EventID:
+      name: id
+      in: path
+      required: true
+      schema: {type: integer, format: int64, minimum: 1}
+    UserID:
+      name: id
+      in: path
+      required: true
+      schema: {type: integer, format: int64, minimum: 1}
+  responses:
+    BadRequest:
+      description: Invalid request
+      content:
+        application/json:
+          schema: {$ref: "#/components/schemas/Error"}
+    Unauthorized:
+      description: Authentication required or credentials are invalid
+      content:
+        application/json:
+          schema: {$ref: "#/components/schemas/Error"}
+    Forbidden:
+      description: Insufficient permissions
+      content:
+        application/json:
+          schema: {$ref: "#/components/schemas/Error"}
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema: {$ref: "#/components/schemas/Error"}
+    Conflict:
+      description: Request conflicts with current state
+      content:
+        application/json:
+          schema: {$ref: "#/components/schemas/Error"}
+  schemas:
+    CreateUserRequest:
+      type: object
+      required: [name, email, password]
+      properties:
+        name: {type: string, minLength: 1}
+        email: {type: string, format: email}
+        password: {type: string, format: password, minLength: 6}
+    LoginRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email: {type: string, format: email}
+        password: {type: string, format: password}
+    GoogleLoginRequest:
+      type: object
+      required: [id_token]
+      properties:
+        id_token: {type: string}
+    UpdateRoleRequest:
+      type: object
+      required: [role]
+      properties:
+        role:
+          type: string
+          enum: [user, organizer, admin, super_admin]
+    UserResponse:
+      type: object
+      properties:
+        id: {type: integer, format: int64}
+        name: {type: string}
+        email: {type: string, format: email}
+        role: {type: string, enum: [user, organizer, admin, super_admin]}
+        token: {type: string}
+        created_at: {type: string}
+    CreateEventRequest:
+      type: object
+      required: [title, location, starts_at, total_tickets]
+      properties:
+        title: {type: string, minLength: 2, maxLength: 150}
+        description: {type: string, maxLength: 1000}
+        location: {type: string}
+        starts_at: {type: string, format: date-time}
+        total_tickets: {type: integer, minimum: 1}
+        price: {type: integer, minimum: 0}
+    UpdateEventRequest:
+      type: object
+      properties:
+        title: {type: string, minLength: 2, maxLength: 150}
+        description: {type: string, maxLength: 1000}
+        location: {type: string}
+        starts_at: {type: string, format: date-time}
+        price: {type: integer, minimum: 0}
+    Event:
+      type: object
+      properties:
+        id: {type: integer, format: int64}
+        title: {type: string}
+        description: {type: string}
+        location: {type: string}
+        starts_at: {type: string, format: date-time}
+        total_tickets: {type: integer}
+        available_tickets: {type: integer}
+        price: {type: integer}
+        created_at: {type: string}
+    CreateBookingRequest:
+      type: object
+      required: [event_id, quantity]
+      properties:
+        event_id: {type: integer, format: int64, minimum: 1}
+        quantity: {type: integer, minimum: 1}
+    Booking:
+      type: object
+      properties:
+        id: {type: integer, format: int64}
+        user_id: {type: integer, format: int64}
+        event_id: {type: integer, format: int64}
+        quantity: {type: integer}
+        total_price: {type: integer}
+        status: {type: string, example: confirmed}
+        booking_code: {type: string}
+        created_at: {type: string}
+    Error:
+      type: object
+      properties:
+        code: {type: integer}
+        message: {type: string}
+        details: {type: string}

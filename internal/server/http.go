@@ -3,10 +3,10 @@ package server
 import (
 	"fmt"
 	"gotickets/internal/config"
+	"gotickets/internal/docs"
 	"gotickets/internal/domain/booking"
 	"gotickets/internal/domain/event"
 	"gotickets/internal/domain/user"
-	"net/http"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v5"
@@ -34,13 +34,7 @@ func StartServer(db *gorm.DB, cfg *config.Config) {
 	e.Use(middleware.RequestLogger())
 	e.Use(middleware.Recover())
 
-	e.GET("/health", func(c *echo.Context) error {
-		return c.String(http.StatusOK, "Running")
-	})
-
-	e.GET("/", func(c *echo.Context) error {
-		return c.JSON(http.StatusOK, map[string]string{"message": "Hello, World!"})
-	})
+	docs.RegisterRoutes(e)
 
 	//routes
 	user.RegisterRoutes(e, db, cfg)
