@@ -12,7 +12,7 @@ import (
 func RegisterRoutes(e *echo.Echo, db *gorm.DB, cfg *config.Config) {
 	userRepository := NewRepository(db)
 	jwtService := auth.NewJWTService(cfg.JWTSECRET)
-	userService := NewService(userRepository, jwtService)
+	userService := NewService(userRepository, jwtService, cfg)
 	userHandler := NewHandler(userService)
 
 	authMiddleware := middlewares.AuthMiddleware(jwtService)
@@ -21,6 +21,8 @@ func RegisterRoutes(e *echo.Echo, db *gorm.DB, cfg *config.Config) {
 
 	api.POST("/register", userHandler.CreateUser)
 	api.POST("/login", userHandler.LoginUser)
+	api.POST("/google", userHandler.LoginWithGoogle)
 	api.GET("/me", userHandler.GetMe, authMiddleware) // protected route, requires authentication
+	api.PATCH("/users/:id/role", userHandler.UpdateRole, authMiddleware, middlewares.RequireRoles(RoleAdmin, RoleSuperAdmin))
 
 }
