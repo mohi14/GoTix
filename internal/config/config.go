@@ -8,9 +8,11 @@ import (
 )
 
 type Config struct {
-	DATABASE_URL string
-	PORT         string
-	JWTSECRET    string
+	DATABASE_URL    string
+	PORT            string
+	JWTSECRET       string
+	GOOGLECLIENTID  string
+	SUPERADMINEMAIL string
 }
 
 func LoadEnv() *Config {
@@ -21,8 +23,10 @@ func LoadEnv() *Config {
 	}
 
 	return &Config{
-		DATABASE_URL: os.Getenv("DATABASE_URL"),
-		PORT:         os.Getenv("PORT"),
-		JWTSECRET:    os.Getenv("JWTSECRET"),
+		DATABASE_URL:    os.Getenv("DATABASE_URL"),
+		PORT:            os.Getenv("PORT"),
+		JWTSECRET:       os.Getenv("JWTSECRET"),
+		GOOGLECLIENTID:  os.Getenv("GOOGLE_CLIENT_ID"),
+		SUPERADMINEMAIL: os.Getenv("SUPER_ADMIN_EMAIL"),
 	}
 }

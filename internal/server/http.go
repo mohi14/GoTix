@@ -44,7 +44,7 @@ func StartServer(db *gorm.DB, cfg *config.Config) {
 
 	//routes
 	user.RegisterRoutes(e, db, cfg)
-	event.RegisterRoutes(e, db)
+	event.RegisterRoutes(e, db, cfg)
 	booking.RegisterRoutes(e, db, cfg)
 
 	port := fmt.Sprintf(":%s", cfg.PORT)

@@ -44,7 +44,28 @@ func AuthMiddleware(jwtService auth.JWTService) echo.MiddlewareFunc {
 			c.Set("user_id", claims.UserID)
 			c.Set("user_email", claims.Email)
 			c.Set("user_name", claims.Name)
+			c.Set("user_role", claims.Role)
 
+			return next(c)
+		}
+	}
+}
+
+func RequireRoles(roles ...string) echo.MiddlewareFunc {
+	allowed := make(map[string]struct{}, len(roles))
+	for _, role := range roles {
+		allowed[role] = struct{}{}
+	}
+
+	return func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c *echo.Context) error {
+			role, ok := c.Get("user_role").(string)
+			if !ok {
+				return c.JSON(http.StatusForbidden, map[string]string{"error": "role is missing"})
+			}
+			if _, ok := allowed[role]; !ok {
+				return c.JSON(http.StatusForbidden, map[string]string{"error": "insufficient permissions"})
+			}
 			return next(c)
 		}
 	}
