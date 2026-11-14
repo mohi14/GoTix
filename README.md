@@ -66,7 +66,9 @@ OpenAPI documentation is available at:
 - OpenAPI specification: `http://localhost:8080/api/v1/docs/openapi.yaml`
 
 The Swagger UI is served by the application and loads the official Swagger UI
-assets from its CDN. Use the `Authorize` button to test JWT-protected endpoints.
+assets from its CDN. The OpenAPI specification uses a relative server URL, so
+it automatically targets the current host in local, staging, and production.
+Use the `Authorize` button to test JWT-protected endpoints.
 
 Run checks:
 

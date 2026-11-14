@@ -6,8 +6,8 @@ info:
   license:
     name: MIT
 servers:
-  - url: http://localhost:8080
-    description: Local development
+  - url: /
+    description: Current GoTix API host
 tags:
   - name: System
   - name: Authentication
