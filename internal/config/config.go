@@ -10,6 +10,7 @@ import (
 type Config struct {
 	DATABASE_URL string
 	PORT         string
+	JWTSECRET    string
 }
 
 func LoadEnv() *Config {
@@ -22,5 +23,6 @@ func LoadEnv() *Config {
 	return &Config{
 		DATABASE_URL: os.Getenv("DATABASE_URL"),
 		PORT:         os.Getenv("PORT"),
+		JWTSECRET:    os.Getenv("JWTSECRET"),
 	}
 }

@@ -13,7 +13,7 @@ const (
 )
 
 type JWTClaims struct {
-	UserId uint   `json:"user_id"`
+	UserID uint   `json:"user_id"`
 	Name   string `json:"name"`
 	Email  string `json:"email"`
 	jwt.RegisteredClaims
@@ -41,7 +41,7 @@ func NewJWTService(secretKey string) JWTService {
 
 func (js *jwtService) GenerateToken(userId uint, name string, email string) (string, error) {
 	claims := &JWTClaims{
-		UserId: userId,
+		UserID: userId,
 		Name:   name,
 		Email:  email,
 		RegisteredClaims: jwt.RegisteredClaims{
