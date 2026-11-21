@@ -57,6 +57,10 @@ go run ./cmd
 
 The server listens on `http://localhost:8080` by default.
 
+<p align="center">
+  <img src="./assets/gotix-home-preview.svg" alt="GoTix server home page" width="900">
+</p>
+
 OpenAPI documentation is available at:
 
 - Landing page: `http://localhost:8080/`
