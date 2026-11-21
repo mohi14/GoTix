@@ -13,6 +13,7 @@ type Repository interface {
 	GetAll() ([]*Event, error)
 	GetByID(eventId uint) (*Event, error)
 	Update(event *Event) error
+	Delete(eventId uint) error
 }
 
 type repository struct {
@@ -64,4 +65,15 @@ func (r *repository) GetByID(eventId uint) (*Event, error) {
 
 func (r *repository) Update(event *Event) error {
 	return r.db.Save(event).Error
+}
+
+func (r *repository) Delete(eventId uint) error {
+	result := r.db.Delete(&Event{}, eventId)
+	if result.Error != nil {
+		return result.Error
+	}
+	if result.RowsAffected == 0 {
+		return ErrEventNotFound
+	}
+	return nil
 }

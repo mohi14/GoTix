@@ -194,5 +194,6 @@ func serveSwaggerUI(c *echo.Context) error {
 
 func serveOpenAPISpec(c *echo.Context) error {
 	c.Response().Header().Set("Content-Type", "application/yaml; charset=utf-8")
+	c.Response().Header().Set("Cache-Control", "no-store")
 	return c.String(http.StatusOK, string(openAPISpec))
 }

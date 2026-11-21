@@ -27,7 +27,12 @@ func (cv *CustomValidator) Validate(i any) error {
 }
 
 func StartServer(db *gorm.DB, cfg *config.Config) {
-	db.AutoMigrate(&user.User{}, &event.Event{}, &booking.Booking{})
+	if err := db.AutoMigrate(&user.User{}, &event.Event{}, &booking.Booking{}); err != nil {
+		panic("Failed to migrate database: " + err.Error())
+	}
+	if err := seedDatabase(db); err != nil {
+		panic("Failed to seed database: " + err.Error())
+	}
 
 	e := echo.New()
 	e.Validator = &CustomValidator{validator: validator.New()}

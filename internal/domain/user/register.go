@@ -23,6 +23,7 @@ func RegisterRoutes(e *echo.Echo, db *gorm.DB, cfg *config.Config) {
 	api.POST("/login", userHandler.LoginUser)
 	api.POST("/google", userHandler.LoginWithGoogle)
 	api.GET("/me", userHandler.GetMe, authMiddleware) // protected route, requires authentication
+	api.GET("/users", userHandler.GetUsers, authMiddleware, middlewares.RequireRoles(RoleAdmin, RoleSuperAdmin))
 	api.PATCH("/users/:id/role", userHandler.UpdateRole, authMiddleware, middlewares.RequireRoles(RoleAdmin, RoleSuperAdmin))
 
 }

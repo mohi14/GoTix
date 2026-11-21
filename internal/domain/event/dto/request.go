@@ -12,9 +12,10 @@ type CreateEventRequest struct {
 }
 
 type UpdateEventRequest struct {
-	Title       string    `json:"title" validate:"omitempty,min=2,max=150"`
-	Description string    `json:"description" validate:"omitempty,max=1000"`
-	Location    string    `json:"location" validate:"omitempty"`
-	StartsAt    time.Time `json:"starts_at" validate:"omitempty"`
-	Price       int       `json:"price" validate:"omitempty,gte=0"`
+	Title        string    `json:"title" validate:"omitempty,min=2,max=150"`
+	Description  string    `json:"description" validate:"omitempty,max=1000"`
+	Location     string    `json:"location" validate:"omitempty"`
+	StartsAt     time.Time `json:"starts_at" validate:"omitempty"`
+	TotalTickets int       `json:"total_tickets" validate:"omitempty,gte=0"`
+	Price        int       `json:"price" validate:"omitempty,gte=0"`
 }

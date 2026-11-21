@@ -162,3 +162,13 @@ func (h *handler) GetMe(c *echo.Context) error {
 		Role:  role,
 	})
 }
+
+func (h *handler) GetUsers(c *echo.Context) error {
+	users, err := h.service.GetUsers()
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, httpresponse.Error{
+			Code: http.StatusInternalServerError, Message: "Failed to list users", Details: err.Error(),
+		})
+	}
+	return c.JSON(http.StatusOK, users)
+}

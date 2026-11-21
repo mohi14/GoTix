@@ -6,6 +6,7 @@ import (
 	"gotickets/internal/domain/event"
 	"gotickets/internal/httpresponse"
 	"net/http"
+	"strconv"
 
 	"github.com/labstack/echo/v5"
 )
@@ -116,4 +117,36 @@ func (h *handler) GetMyBookings(c *echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, bookings)
+}
+
+func (h *handler) GetBooking(c *echo.Context) error {
+	userID, ok := getCurrentUserID(c)
+	if !ok {
+		return c.JSON(http.StatusUnauthorized, httpresponse.Error{Code: http.StatusUnauthorized, Message: "Unauthorized"})
+	}
+	bookingID, err := strconv.ParseUint(c.Param("id"), 10, 32)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, httpresponse.Error{Code: http.StatusBadRequest, Message: "Invalid booking id"})
+	}
+	response, err := h.service.GetBooking(uint(bookingID), userID)
+	if err != nil {
+		return bookingErrorResponse(c, err)
+	}
+	return c.JSON(http.StatusOK, response)
+}
+
+func (h *handler) CancelBooking(c *echo.Context) error {
+	userID, ok := getCurrentUserID(c)
+	if !ok {
+		return c.JSON(http.StatusUnauthorized, httpresponse.Error{Code: http.StatusUnauthorized, Message: "Unauthorized"})
+	}
+	bookingID, err := strconv.ParseUint(c.Param("id"), 10, 32)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, httpresponse.Error{Code: http.StatusBadRequest, Message: "Invalid booking id"})
+	}
+	response, err := h.service.CancelBooking(uint(bookingID), userID)
+	if err != nil {
+		return bookingErrorResponse(c, err)
+	}
+	return c.JSON(http.StatusOK, response)
 }

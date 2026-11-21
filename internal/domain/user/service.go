@@ -86,6 +86,7 @@ func (s *service) LoginUser(req dto.LoginRequest) (*dto.UserResponse, error) {
 		ID:        user.ID,
 		Name:      user.Name,
 		Email:     user.Email,
+		Role:      user.Role,
 		Token:     token,
 		CreatedAt: user.CreatedAt.String(),
 	}
@@ -135,12 +136,14 @@ func (s *service) LoginWithGoogle(req dto.GoogleLoginRequest) (*dto.UserResponse
 		}
 	}
 	if user == nil {
-		user = &User{Name: info.Name, Email: info.Email, GoogleID: info.Sub, Role: RoleUser}
+		googleID := info.Sub
+		user = &User{Name: info.Name, Email: info.Email, GoogleID: &googleID, Role: RoleUser}
 		if err := s.repo.CreateUser(user); err != nil {
 			return nil, err
 		}
-	} else if user.GoogleID == "" {
-		user.GoogleID = info.Sub
+	} else if user.GoogleID == nil {
+		googleID := info.Sub
+		user.GoogleID = &googleID
 		if err := s.repo.UpdateUser(user); err != nil {
 			return nil, err
 		}
@@ -163,4 +166,22 @@ func (s *service) UpdateRole(id uint, role string) error {
 	}
 	user.Role = role
 	return s.repo.UpdateUser(user)
+}
+
+func (s *service) GetUsers() ([]dto.UserResponse, error) {
+	users, err := s.repo.GetUsers()
+	if err != nil {
+		return nil, err
+	}
+	responses := make([]dto.UserResponse, len(users))
+	for i, user := range users {
+		responses[i] = dto.UserResponse{
+			ID:        user.ID,
+			Name:      user.Name,
+			Email:     user.Email,
+			Role:      user.Role,
+			CreatedAt: user.CreatedAt.String(),
+		}
+	}
+	return responses, nil
 }

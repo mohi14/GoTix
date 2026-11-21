@@ -25,6 +25,12 @@ func eventErrorResponse(c *echo.Context, err error) error {
 			Message: "Event not found",
 		})
 	}
+	if errors.Is(err, ErrInvalidTicketCount) {
+		return c.JSON(http.StatusBadRequest, httpresponse.Error{
+			Code:    http.StatusBadRequest,
+			Message: err.Error(),
+		})
+	}
 
 	return c.JSON(http.StatusInternalServerError, httpresponse.Error{
 		Code:    http.StatusInternalServerError,
@@ -123,4 +129,15 @@ func (h *handler) UpdateEvent(c *echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, response)
+}
+
+func (h *handler) DeleteEvent(c *echo.Context) error {
+	eventID, err := strconv.ParseUint(c.Param("id"), 10, 32)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, httpresponse.Error{Code: http.StatusBadRequest, Message: "Invalid event id"})
+	}
+	if err := h.service.DeleteEvent(uint(eventID)); err != nil {
+		return eventErrorResponse(c, err)
+	}
+	return c.NoContent(http.StatusNoContent)
 }

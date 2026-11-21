@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675">
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#070b16"/>
+      <stop offset="1" stop-color="#111827"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#67e8f9"/>
+      <stop offset="1" stop-color="#a78bfa"/>
+    </linearGradient>
+    <radialGradient id="glow">
+      <stop offset="0" stop-color="#7c3aed" stop-opacity=".38"/>
+      <stop offset="1" stop-color="#7c3aed" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1200" height="675" rx="18" fill="url(#background)"/>
+  <circle cx="210" cy="130" r="300" fill="url(#glow)"/>
+  <circle cx="990" cy="150" r="260" fill="#0891b2" opacity=".12"/>
+
+  <g font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">
+    <g transform="translate(54 42)">
+      <rect width="48" height="48" rx="14" fill="url(#accent)"/>
+      <text x="24" y="33" text-anchor="middle" font-size="25" font-weight="800" fill="#111827">G</text>
+      <text x="62" y="34" font-size="23" font-weight="800" fill="#f8fafc">GoTix</text>
+      <text x="1092" y="29" text-anchor="end" font-size="15" fill="#a7b0c2">System status ●</text>
+    </g>
+
+    <g transform="translate(54 155)">
+      <text x="0" y="0" font-size="15" font-weight="800" letter-spacing="3" fill="#67e8f9">EVENT INFRASTRUCTURE, REIMAGINED</text>
+      <text x="0" y="94" font-size="82" font-weight="800" letter-spacing="-5" fill="#f8fafc">Make every</text>
+      <text x="0" y="176" font-size="82" font-weight="800" letter-spacing="-5" fill="#a78bfa">moment count.</text>
+      <text x="0" y="226" font-size="20" fill="#a7b0c2">
+        <tspan x="0">A fast, reliable API for creating unforgettable events,</tspan>
+        <tspan x="0" dy="30">managing ticket inventory, and seamless booking.</tspan>
+      </text>
+
+      <rect y="304" width="220" height="48" rx="12" fill="url(#accent)"/>
+      <text x="110" y="335" text-anchor="middle" font-size="16" font-weight="800" fill="#101526">Explore the API →</text>
+      <rect x="236" y="304" width="210" height="48" rx="12" fill="#111827" stroke="#ffffff" stroke-opacity=".12"/>
+      <text x="341" y="335" text-anchor="middle" font-size="16" font-weight="700" fill="#f8fafc">View system status</text>
+    </g>
+
+    <g transform="translate(690 150)">
+      <circle cx="210" cy="200" r="176" fill="none" stroke="#a78bfa" stroke-opacity=".35" stroke-width="2"/>
+      <circle cx="210" cy="200" r="125" fill="none" stroke="#67e8f9" stroke-opacity=".22" stroke-width="2"/>
+      <rect x="38" y="95" width="344" height="240" rx="22" fill="#111827" fill-opacity=".92" stroke="#ffffff" stroke-opacity=".12"/>
+      <circle cx="72" cy="128" r="6" fill="#fb7185"/>
+      <circle cx="94" cy="128" r="6" fill="#fbbf24"/>
+      <circle cx="116" cy="128" r="6" fill="#34d399"/>
+      <text x="72" y="190" font-size="17" fill="#94a3b8" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">GET  </text>
+      <text x="118" y="190" font-size="17" fill="#67e8f9" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">/api/v1/events</text>
+      <text x="72" y="225" font-size="17" fill="#94a3b8" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">POST </text>
+      <text x="118" y="225" font-size="17" fill="#67e8f9" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">/api/v1/bookings</text>
+      <text x="72" y="260" font-size="17" fill="#94a3b8" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">AUTH </text>
+      <text x="118" y="260" font-size="17" fill="#67e8f9" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">Bearer JWT</text>
+      <text x="72" y="300" font-size="17" fill="#34d399" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">200  </text>
+      <text x="118" y="300" font-size="17" fill="#94a3b8" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">ready for your next event</text>
+    </g>
+  </g>
+</svg>
