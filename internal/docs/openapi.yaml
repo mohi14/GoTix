@@ -1,4 +1,4 @@
-openapi: 3.1.0
+openapi: 3.0.3
 info:
   title: GoTix API
   description: API for managing events and booking tickets.
@@ -120,6 +120,23 @@ paths:
         "401": {$ref: "#/components/responses/Unauthorized"}
         "403": {$ref: "#/components/responses/Forbidden"}
         "404": {$ref: "#/components/responses/NotFound"}
+  /api/v1/auth/users:
+    get:
+      tags: [Authentication]
+      summary: List users
+      description: Requires admin or super_admin.
+      security: [{bearerAuth: []}]
+      responses:
+        "200":
+          description: User list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/UserResponse"
+        "401": {$ref: "#/components/responses/Unauthorized"}
+        "403": {$ref: "#/components/responses/Forbidden"}
   /api/v1/events:
     get:
       tags: [Events]
@@ -191,6 +208,18 @@ paths:
         "401": {$ref: "#/components/responses/Unauthorized"}
         "403": {$ref: "#/components/responses/Forbidden"}
         "404": {$ref: "#/components/responses/NotFound"}
+    delete:
+      tags: [Events]
+      summary: Delete an event
+      security: [{bearerAuth: []}]
+      parameters:
+        - $ref: "#/components/parameters/EventID"
+      responses:
+        "204":
+          description: Event deleted
+        "401": {$ref: "#/components/responses/Unauthorized"}
+        "403": {$ref: "#/components/responses/Forbidden"}
+        "404": {$ref: "#/components/responses/NotFound"}
   /api/v1/bookings:
     post:
       tags: [Bookings]
@@ -228,6 +257,41 @@ paths:
                 items:
                   $ref: "#/components/schemas/Booking"
         "401": {$ref: "#/components/responses/Unauthorized"}
+  /api/v1/bookings/{id}:
+    get:
+      tags: [Bookings]
+      summary: Get a booking owned by the current user
+      security: [{bearerAuth: []}]
+      parameters:
+        - $ref: "#/components/parameters/BookingID"
+      responses:
+        "200":
+          description: Booking details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Booking"
+        "401": {$ref: "#/components/responses/Unauthorized"}
+        "403": {$ref: "#/components/responses/Forbidden"}
+        "404": {$ref: "#/components/responses/NotFound"}
+  /api/v1/bookings/{id}/cancel:
+    post:
+      tags: [Bookings]
+      summary: Cancel a booking and restore ticket inventory
+      security: [{bearerAuth: []}]
+      parameters:
+        - $ref: "#/components/parameters/BookingID"
+      responses:
+        "200":
+          description: Booking cancelled
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Booking"
+        "401": {$ref: "#/components/responses/Unauthorized"}
+        "403": {$ref: "#/components/responses/Forbidden"}
+        "404": {$ref: "#/components/responses/NotFound"}
+        "409": {$ref: "#/components/responses/Conflict"}
 components:
   securitySchemes:
     bearerAuth:
@@ -235,6 +299,11 @@ components:
       scheme: bearer
       bearerFormat: JWT
   parameters:
+    BookingID:
+      name: id
+      in: path
+      required: true
+      schema: {type: integer, format: int64, minimum: 1}
     EventID:
       name: id
       in: path
@@ -323,6 +392,7 @@ components:
         description: {type: string, maxLength: 1000}
         location: {type: string}
         starts_at: {type: string, format: date-time}
+        total_tickets: {type: integer, minimum: 0}
         price: {type: integer, minimum: 0}
     Event:
       type: object

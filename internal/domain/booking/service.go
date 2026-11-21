@@ -46,3 +46,22 @@ func (s *service) GetMyBookings(userId uint) ([]*dto.BookingResponse, error) {
 
 	return responses, nil
 }
+
+func (s *service) GetBooking(bookingId uint, userId uint) (*dto.BookingResponse, error) {
+	booking, err := s.bookingRepo.GetByID(bookingId)
+	if err != nil {
+		return nil, err
+	}
+	if booking.UserID != userId {
+		return nil, ErrForbiddenBookingAccess
+	}
+	return booking.ToResponse(), nil
+}
+
+func (s *service) CancelBooking(bookingId uint, userId uint) (*dto.BookingResponse, error) {
+	booking, err := s.bookingRepo.CancelForUser(bookingId, userId)
+	if err != nil {
+		return nil, err
+	}
+	return booking.ToResponse(), nil
+}

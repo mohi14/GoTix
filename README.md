@@ -78,6 +78,9 @@ go vet ./...
 ```
 
 Database tables are created or updated automatically when the server starts.
+The application also seeds an idempotent demo dataset on startup. Demo account
+passwords are `password123`; available accounts include `admin@gotix.local`,
+`organizer@gotix.local`, `alex@gotix.local`, and `sam@gotix.local`.
 
 ## API
 
@@ -110,6 +113,10 @@ Authorization: Bearer <token>
 | `POST` | `/api/v1/events` | `organizer`, `admin`, `super_admin` | Create an event |
 | `PUT` | `/api/v1/events/:id` | `organizer`, `admin`, `super_admin` | Update an event |
 | `PATCH` | `/api/v1/auth/users/:id/role` | `admin`, `super_admin` | Change a user's role |
+| `DELETE` | `/api/v1/events/:id` | `organizer`, `admin`, `super_admin` | Delete an event |
+| `GET` | `/api/v1/auth/users` | `admin`, `super_admin` | List users |
+| `GET` | `/api/v1/bookings/:id` | Any authenticated user | Get a booking owned by the current user |
+| `POST` | `/api/v1/bookings/:id/cancel` | Any authenticated user | Cancel a booking and restore inventory |
 
 Admins cannot assign the `admin` or `super_admin` roles. Only a
 `super_admin` can assign those roles.

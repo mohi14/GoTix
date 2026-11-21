@@ -1,6 +1,11 @@
 package event
 
-import "gotickets/internal/domain/event/dto"
+import (
+	"errors"
+	"gotickets/internal/domain/event/dto"
+)
+
+var ErrInvalidTicketCount = errors.New("total tickets cannot be lower than sold tickets")
 
 type service struct {
 	repo Repository
@@ -83,9 +88,22 @@ func (s *service) UpdateEvent(eventId uint, req dto.UpdateEventRequest) (*dto.Ev
 		event.Price = req.Price
 	}
 
+	if req.TotalTickets != 0 {
+		soldTickets := event.TotalTickets - event.AvailableTickets
+		if req.TotalTickets < soldTickets {
+			return nil, ErrInvalidTicketCount
+		}
+		event.TotalTickets = req.TotalTickets
+		event.AvailableTickets = req.TotalTickets - soldTickets
+	}
+
 	if err := s.repo.Update(event); err != nil {
 		return nil, err
 	}
 
 	return event.ToResponse(), nil
+}
+
+func (s *service) DeleteEvent(eventId uint) error {
+	return s.repo.Delete(eventId)
 }

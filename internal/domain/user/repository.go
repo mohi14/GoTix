@@ -14,6 +14,7 @@ type Repository interface {
 	GetUserByGoogleID(googleID string) (*User, error)
 	GetUserByID(id uint) (*User, error)
 	UpdateUser(user *User) error
+	GetUsers() ([]*User, error)
 }
 
 type repository struct {
@@ -75,4 +76,12 @@ func (r *repository) GetUserByID(id uint) (*User, error) {
 
 func (r *repository) UpdateUser(user *User) error {
 	return r.db.Save(user).Error
+}
+
+func (r *repository) GetUsers() ([]*User, error) {
+	var users []*User
+	if err := r.db.Order("id ASC").Find(&users).Error; err != nil {
+		return nil, err
+	}
+	return users, nil
 }

@@ -21,5 +21,6 @@ func RegisterRoutes(e *echo.Echo, db *gorm.DB, cfg *config.Config) {
 	api.GET("", handler.GetEvents)
 	api.GET("/:id", handler.GetEventsByID)
 	api.PUT("/:id", handler.UpdateEvent, authMiddleware, eventManagers)
+	api.DELETE("/:id", handler.DeleteEvent, authMiddleware, eventManagers)
 
 }

@@ -14,11 +14,11 @@ const (
 
 type User struct {
 	gorm.Model
-	Name     string `json:"name" gorm:"type:varchar(100);not null"`
-	Email    string `json:"email" gorm:"type:varchar(255);uniqueIndex;not null"`
-	Password string `json:"password" gorm:"type:varchar(100);not null"`
-	Role     string `json:"role" gorm:"type:varchar(20);not null;default:user"`
-	GoogleID string `json:"-" gorm:"type:varchar(255);uniqueIndex"`
+	Name     string  `json:"name" gorm:"type:varchar(100);not null"`
+	Email    string  `json:"email" gorm:"type:varchar(255);uniqueIndex;not null"`
+	Password string  `json:"password" gorm:"type:varchar(100);not null"`
+	Role     string  `json:"role" gorm:"type:varchar(20);not null;default:user"`
+	GoogleID *string `json:"-" gorm:"type:varchar(255);uniqueIndex"`
 }
 
 func (u *User) hashPassword(password string) error {

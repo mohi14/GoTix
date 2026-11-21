@@ -1,7 +1,6 @@
 package config
 
 import (
-	"log"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -16,15 +15,20 @@ type Config struct {
 }
 
 func LoadEnv() *Config {
+	_ = godotenv.Load()
 
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
+	databaseURL := os.Getenv("DATABASE_URL")
+	if databaseURL == "" {
+		databaseURL = "postgresql://postgres:postgres@localhost:5432/gotix?sslmode=disable"
+	}
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
 	}
 
 	return &Config{
-		DATABASE_URL:    os.Getenv("DATABASE_URL"),
-		PORT:            os.Getenv("PORT"),
+		DATABASE_URL:    databaseURL,
+		PORT:            port,
 		JWTSECRET:       os.Getenv("JWTSECRET"),
 		GOOGLECLIENTID:  os.Getenv("GOOGLE_CLIENT_ID"),
 		SUPERADMINEMAIL: os.Getenv("SUPER_ADMIN_EMAIL"),
